@@ -1,0 +1,45 @@
+.hourglass {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 80px;
+  cursor: pointer;
+  z-index: 10;
+  transform-style: preserve-3d;
+}
+
+.glass {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid #FFD700;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+}
+
+.sand {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #FFD700;
+  transition: height 1s linear;
+}
+
+.stand {
+  width: 60px;
+  height: 10px;
+  margin-left: -5px;
+  background: #8f22dd;
+  border-radius: 0 0 5px 5px;
+}
+
+.hourglass.rotating {
+  animation: rotateHourglass 1s linear forwards;
+}
+
+@keyframes rotateHourglass {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

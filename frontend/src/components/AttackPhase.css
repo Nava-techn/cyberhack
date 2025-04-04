@@ -1,0 +1,54 @@
+.attack-phase {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 2rem;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  z-index: 1000;
+  min-width: 300px;
+}
+
+.attack-prompt h3,
+.attack-result h3 {
+  margin-bottom: 1rem;
+  color: #00ff00;
+}
+
+.attack-btn,
+.confirm-btn {
+  background-color: #00ff00;
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.attack-btn:hover,
+.confirm-btn:hover {
+  background-color: #00cc00;
+}
+
+.attack-result.success h3 {
+  color: #00ff00;
+}
+
+.attack-result.failure h3 {
+  color: #ff0000;
+}
+
+.special-message {
+  color: #ffff00;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.attack-result p {
+  margin: 0.5rem 0;
+} 

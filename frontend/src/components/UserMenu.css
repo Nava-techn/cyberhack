@@ -1,0 +1,40 @@
+.user-menu {
+    position: relative;
+  }
+  
+  .user-button {
+    background: none;
+    border: 1px solid white;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: #34495e;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .dropdown-menu p {
+    margin: 0;
+    color: white;
+  }
+  
+  .dropdown-menu button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu button:hover {
+    color: #1abc9c; /* Couleur au survol */
+  }

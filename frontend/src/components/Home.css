@@ -1,0 +1,73 @@
+.home {
+    background-image: url('../assets/cover.png'); /* Image de fond */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+  }
+  
+  .home-content {
+    background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .home h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  
+  .start-button {
+    background-color: #1abc9c; /* Couleur du bouton */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .start-button:hover {
+    background-color: #16a085; /* Couleur au survol */
+  }
+.board {
+    margin: 20px auto;
+    text-align: center;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    margin: 20px;
+}
+
+.card-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background-color: #f9f9f9;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.success-message {
+    color: green;
+    font-weight: bold;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}

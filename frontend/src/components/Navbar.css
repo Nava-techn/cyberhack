@@ -1,0 +1,70 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #36417A; /* Couleur de fond de la navbar */
+    color: white;
+  }
+  
+  .navbar-left, .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .menu-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    background-color: #34495e;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-items: left;
+  }
+  
+  .dropdown-menu button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu button:hover {
+    background-color: #b7bee1;
+  }
+  .logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .game-name {
+    font-size: 30px;
+    font-weight: bold;
+  }
+  
+  .navbar-right button {
+    background: none;
+    border: 1px solid white;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .navbar-right button:hover {
+    background-color: #5265AD; /* Couleur au survol */
+  }

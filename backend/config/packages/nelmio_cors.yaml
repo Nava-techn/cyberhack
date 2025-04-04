@@ -1,0 +1,11 @@
+nelmio_cors:
+    defaults:
+        allow_origin: ['http://localhost:3001']  # Assurez-vous que c'est la bonne URL pour votre frontend React
+        allow_methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE']  # Assurez-vous que 'POST' est bien présent
+        allow_headers: ['Content-Type', 'Authorization']
+        expose_headers: ['Link']
+        max_age: 3600
+    paths:
+        '^/api/':  # Applique les CORS à toutes les routes commençant par /api
+            allow_origin: ['http://localhost:3001']
+            allow_methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE']

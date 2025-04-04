@@ -1,0 +1,14 @@
+controllers:
+    resource: ../src/Controller/
+    type: attribute
+
+start-game:
+  path: /api/start-game
+  controller: App\Controller\Api\CardController::startGame
+  methods: [POST,GET]
+
+
+api_start_game:
+    path: /api/start-game
+    controller: App\Controller\Api\CardController::startGame
+    methods: [POST]

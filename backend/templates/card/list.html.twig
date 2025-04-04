@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liste des cartes</title>
+</head>
+<body>
+    <h1>Liste des cartes</h1>
+    <ul>
+        {% for card in cards %}
+            <li>
+                ID: {{ card.id }} - Type: {{ card.type }} - Spécial: {{ card.isSpecial ? 'Oui' : 'Non' }}
+                {% if card.imageUrl %}
+                    <img src="{{ asset('images/' ~ card.imageUrl) }}" alt="{{ card.type }}" width="100">
+                {% endif %}
+                <form action="{{ path('destroy_card', { id: card.id }) }}" method="post" style="display:inline;">
+                    <button type="submit">Supprimer</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <form action="{{ path('reset_shield_cards') }}" method="post">
+        <button type="submit">Réinitialiser les cartes boucliers</button>
+    </form>
+</body>
+</html>

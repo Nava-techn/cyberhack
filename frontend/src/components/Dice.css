@@ -1,0 +1,86 @@
+.dice {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  left: 88%;
+  top: 20px;
+  transform-style: preserve-3d;
+  transition: transform 1s;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.dice.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.dice.enabled {
+  cursor: pointer;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+  }
+}
+
+.dice.rolling {
+  animation: roll 1s infinite linear;
+}
+
+@keyframes roll {
+  0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+  100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+}
+
+.dice[data-value="1"] { transform: translateX(-50%) rotateX(0deg) rotateY(0deg); }
+.dice[data-value="2"] { transform: translateX(-50%) rotateY(-90deg); }
+.dice[data-value="3"] { transform: translateX(-50%) rotateX(90deg); }
+.dice[data-value="4"] { transform: translateX(-50%) rotateX(-90deg); }
+.dice[data-value="5"] { transform: translateX(-50%) rotateY(90deg); }
+.dice[data-value="6"] { transform: translateX(-50%) rotateY(180deg); }
+
+.face {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: white;
+  border: 2px solid #000;
+  border-radius: 5px;
+}
+
+.face::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #000;
+  border-radius: 50%;
+}
+
+/* Positions des points sur chaque face */
+.front::before { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.back::before { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.right::before { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.left::before { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.top::before { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.bottom::before { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+/* Positions des faces */
+.front { transform: translateZ(30px); }
+.back { transform: translateZ(-30px) rotateY(180deg); }
+.right { transform: translateX(30px) rotateY(90deg); }
+.left { transform: translateX(-30px) rotateY(-90deg); }
+.top { transform: translateY(-30px) rotateX(90deg); }
+.bottom { transform: translateY(30px) rotateX(-90deg); }

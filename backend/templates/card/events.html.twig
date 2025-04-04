@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cartes Événements</title>
+</head>
+<body>
+    <h1>Cartes Événements Tirées</h1>
+    <ul>
+        {% for eventCard in eventCards %}
+            <li>{{ eventCard.description }}</li>
+        {% else %}
+            <li>Aucune carte événement tirée.</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ path('list_cards') }}">Retour à la liste des cartes</a>
+</body>
+</html>

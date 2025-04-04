@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteCond %{REQUEST_URI} ^/api/start-game$
+    RewriteRule .* - [F] # Renvoie une erreur Forbidden
+</IfModule>

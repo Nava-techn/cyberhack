@@ -1,0 +1,244 @@
+.game-container {
+  display: flex;
+  /*justify-content: space-between; /* Ajouté pour séparer les éléments */
+  /*padding: 0 1%; /* Ajouté pour créer de l'espace sur les côtés */
+  align-items: center;
+  height: 90vh;
+  width: 98.8vw;
+  background-color: #0A1A3A; /* Bleu foncé de la charte */
+}
+
+.cards-zone {
+  width: 160px; /* Largeur fixe pour la zone verticale */
+  height: 75vh;
+  background: rgba(26, 45, 90, 0.7); /* Bleu foncé semi-transparent */
+  border-radius: 20px 0 0 20px; /* Arrondis seulement à gauche */
+  border-right: 3px solid #FFD700; /* Séparateur jaune */
+  margin-right: -70px; /* Chevauchement avec la table */
+  z-index: 2;
+  position: relative;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Espacement entre les boutons */
+  padding: 2rem;
+}
+
+.game-table {
+  width: 75vw;
+  height: 75vh;
+  background-image: url('../assets/icons/table.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 20px;
+  box-shadow: 
+    0 0 0 10px #8f22dd, /* Bordure violette */
+    0 0 30px rgba(47, 7, 77, 0.8), /* Glow violet */
+    inset 0 0 20px rgba(0, 0, 0, 0.7); /* Ombre intérieure */
+  position: relative;
+  overflow: hidden;
+  margin-left: auto; /* Pousse la table vers la droite */
+  margin-right: 20px; /* Optionnel : espace depuis le bord droit */
+}
+
+/* Effet de surbrillance jaune sur les bords */
+.game-table::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  box-shadow: inset 0 0 15px #FFD700; /* Jaune de la charte */
+  pointer-events: none;
+}
+
+.selected-cards-area {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 50%;
+}
+
+.selected-sectors-row {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Augmenté l'espacement entre les cartes */
+  width: 100%;
+}
+
+.shield-pockets-row {
+  position: relative;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100px;
+}
+
+.shield-pocket {
+  display: flex;
+  position: relative;
+  width: 90px; /* Même largeur que sector-card-on-table */
+  height: 110px;
+  justify-content: center;
+}
+
+.sector-card-on-table {
+  position: relative;
+  width: 100px;
+  height: 110px;
+  border: 2px solid #FFD700;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  background-color: #0A1A3A;
+  cursor: pointer;
+}
+
+.sector-card-on-table:hover {
+  transform: translateY(-10px) scale(1.2);
+  z-index: 10;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.sector-card-on-table img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.sector-card-on-table::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--verso);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.shield-card-on-table {
+  position: relative;
+  width: 90px;
+  height: 110px;
+  border: 2px solid #8f22dd;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
+}
+
+.shield-card-on-table:hover {
+  transform: translateY(-10px) scale(1.1);
+  z-index: 10;
+}
+
+.shield-card-on-table img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+}
+
+.shield-card-on-table::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: var(--verso);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.shield-card-on-table:hover::after {
+  opacity: 1;
+}
+
+.selected-attacks {
+  position: absolute;
+  top: 20px;
+  left: 20px; /* Changé de right à left */
+  width: 120px;
+  height: 180px;
+  perspective: 1000px;
+  z-index: 1;
+}
+
+/* Style commun pour tous les boutons de deck */
+.deck-label {
+  width: 50%;
+  padding: 15px 20px;
+  background: rgba(10, 26, 58, 0.8);
+  border: 2px solid #8f22dd;
+  border-radius: 8px;
+  color: #FFD700;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.deck-label:hover {
+  background: rgba(106, 13, 173, 0.8);
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+/* Positionnement des boutons */
+.deck-label:nth-child(1) {
+  top: 10%;
+}
+
+.deck-label:nth-child(2) {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.deck-label:nth-child(3) {
+  top: 80%;
+}
+
+.deck-label:nth-child(2):hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Ajuster les z-index pour la cohérence */
+.deck-label {
+  z-index: 20;
+}
+
+.card-selection-modal {
+  z-index: 1000;
+}
+
+.modal-overlay {
+  z-index: 999;
+}

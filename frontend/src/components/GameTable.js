@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Dice from './Dice';
 import Hourglass from './Hourglass';
 import SectorDeck from './SectorDeck';
 import ShieldDeck from './ShieldDeck';
 import AttackDeck from './AttackDeck';
 import AttackPhase from './AttackPhase';
+import GuessAttack from './GuessAttack';
 import './GameTable.css';
 
 const GameTable = () => {
@@ -16,6 +17,9 @@ const GameTable = () => {
   const [diceValue, setDiceValue] = useState(null);
   const [gameWon, setGameWon] = useState(false);
   const [waitingForDiceRoll, setWaitingForDiceRoll] = useState(false);
+  const [isGuessing, setIsGuessing] = useState(false);
+  const [currentAttackCard, setCurrentAttackCard] = useState(null);
+  const hourglassRef = useRef(null);
 
   const getShieldImage = (type, value) => {
     return require(`../assets/boucliers/bouclier-${value}-${type}.png`);
@@ -87,6 +91,46 @@ const GameTable = () => {
     setWaitingForDiceRoll(false);
   };
 
+  const handleAttackCardClick = () => {
+    if (selectedAttacks.length > 0 && !isGuessing) {
+      // Prendre la carte du dessus (index 0)
+      setCurrentAttackCard(selectedAttacks[0]);
+      setIsGuessing(true);
+      
+      // Démarrer le sablier pour 10 secondes
+      if (hourglassRef.current) {
+        hourglassRef.current.startTimer();
+      }
+      
+      // Récupérer les informations de l'attaque depuis l'API
+      fetch(`/api/attaque/${selectedAttacks[0].id}`)
+        .then(response => response.json())
+        .then(data => {
+          setCurrentAttackCard(prev => ({
+            ...prev,
+            description: data.description,
+            correctName: data.nomCorrect,
+            propositions: data.propositions
+          }));
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des données:', error);
+        });
+    }
+  };
+
+  const handleGuessComplete = (success) => {
+    // Retirer la carte utilisée
+    const newAttacks = [...selectedAttacks];
+    newAttacks.shift();
+    setSelectedAttacks(newAttacks);
+    
+    setIsGuessing(false);
+    setCurrentAttackCard(null);
+    
+    // Vous pouvez ajouter ici une logique pour gérer le succès/échec
+  };
+
   if (gameWon) {
     return (
       <div className="game-won">
@@ -105,10 +149,10 @@ const GameTable = () => {
       </div>
       <div className="game-table">
         <Dice onRoll={handleDiceRoll} isEnabled={waitingForDiceRoll} />
-        <Hourglass />
+        <Hourglass ref={hourglassRef} />
         
         {/* Zone des cartes d'attaque */}
-        <div className="selected-attacks">
+        <div className="selected-attacks" onClick={handleAttackCardClick}>
           {selectedAttacks.map((attack, index) => (
             <div 
               key={index}
@@ -180,6 +224,13 @@ const GameTable = () => {
           onAttackResult={handleAttackResult}
           onRequestRollDice={() => setWaitingForDiceRoll(true)}
           isSpecialShield={selectedShields[selectedSectorForAttack][0].type === 'dark'}
+        />
+      )}
+
+      {isGuessing && currentAttackCard && (
+        <GuessAttack 
+          attackCard={currentAttackCard}
+          onGuessComplete={handleGuessComplete}
         />
       )}
     </div>

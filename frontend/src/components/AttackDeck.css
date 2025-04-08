@@ -111,7 +111,7 @@
   transform-style: preserve-3d;
 }
 
-.attack-card:hover .attack-card-inner {
+.attack-card.flipped .attack-card-inner {
   transform: rotateY(180deg);
 }
 

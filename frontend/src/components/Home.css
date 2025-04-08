@@ -6,7 +6,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    color: rgb(255, 255, 255);
     text-align: center;
   }
   
@@ -14,6 +14,8 @@
     background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
     padding: 20px;
     border-radius: 10px;
+    text-align: center;
+    margin-top: 100px;
   }
   
   .home h1 {

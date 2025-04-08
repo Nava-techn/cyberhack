@@ -1,0 +1,46 @@
+.regles-container {
+  background-color: rgb(2, 2, 71);
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;  /* important */
+  align-items: center;
+  justify-content: flex-start; /* pour commencer en haut */
+  padding-top: 40px; /* espace pour le h2 */
+  z-index: 1000;
+}
+
+  
+.regles-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+  
+}
+
+  
+.regles-images {
+  display: flex;
+  flex-wrap: wrap; /* Pour les afficher en grille */
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.regles-images img {
+  width: 50%; /* Ajuste selon ce que tu veux, 45% donne 2 images par ligne */
+  max-width: 1000px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+  margin-bottom: 1%;
+}
+
+.regles-images img:hover {
+  transform: scale(1.05);
+}
+
+  

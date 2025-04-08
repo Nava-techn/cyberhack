@@ -93,8 +93,8 @@ const GameTable = () => {
 
   const handleAttackCardClick = () => {
     if (selectedAttacks.length > 0 && !isGuessing) {
-      // Prendre la carte du dessus (index 0)
-      setCurrentAttackCard(selectedAttacks[0]);
+      const currentCard = selectedAttacks[0];
+      setCurrentAttackCard(currentCard);
       setIsGuessing(true);
       
       // Démarrer le sablier pour 10 secondes
@@ -103,13 +103,16 @@ const GameTable = () => {
       }
       
       // Récupérer les informations de l'attaque depuis l'API
-      fetch(`/api/attaque/${selectedAttacks[0].id}`)
+      fetch(`/api/attaque/${currentCard.id}`)
         .then(response => response.json())
         .then(data => {
           setCurrentAttackCard(prev => ({
             ...prev,
+            id_attaque: data.id_attaque,
+            nom: data.nom,
             description: data.description,
-            correctName: data.nomCorrect,
+            secteur_cible: data.secteur_cible,
+            correctName: data.nom, // Pour la vérification de la réponse
             propositions: data.propositions
           }));
         })

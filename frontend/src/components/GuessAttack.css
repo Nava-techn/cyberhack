@@ -71,3 +71,9 @@
 .proposition-btn.selected {
   background-color: #28a745;
 }
+
+.secteur-cible {
+  margin-top: 10px;
+  font-style: italic;
+  color: #FFD700;
+}

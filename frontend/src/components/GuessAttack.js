@@ -24,9 +24,8 @@ const GuessAttack = ({ attackCard, onGuessComplete }) => {
   
   const handlePropositionClick = (proposition) => {
     setSelectedAnswer(proposition);
-    const isCorrect = proposition === attackCard.correctName;
+    const isCorrect = proposition === attackCard.nom;
     
-    // Petite pause pour montrer la réponse sélectionnée
     setTimeout(() => {
       onGuessComplete(isCorrect);
     }, 500);
@@ -37,12 +36,13 @@ const GuessAttack = ({ attackCard, onGuessComplete }) => {
       <div className="timer">Temps restant : {timeLeft}s</div>
       
       <div className="attack-card-display">
-        <img src={attackCard.image} alt="Carte d'attaque" />
+        <img src={attackCard.image} alt={`Attaque ${attackCard.nom}`} />
       </div>
       
       <div className="description-container">
         <h3>Description de l'attaque :</h3>
         <p>{attackCard.description || "Chargement..."}</p>
+        <p className="secteur-cible">Secteur cible : {attackCard.secteur_cible}</p>
       </div>
       
       {attackCard.propositions && (

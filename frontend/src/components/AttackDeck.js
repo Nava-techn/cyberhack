@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './AttackDeck.css';
 
-const AttackDeck = ({ onSelectAttacks }) => {
+const AttackDeck = ({ onSelectAttacks, onStartGuessing }) => {
   const [showDeck, setShowDeck] = useState(false);
   const [selectedAttacks, setSelectedAttacks] = useState([]);
   const modalRef = useRef(null);

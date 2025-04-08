@@ -1,0 +1,60 @@
+.guide-container {
+    background-color: rgb(2, 2, 71);
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .guide-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #fff;
+  }
+  
+  .category-buttons {
+    margin-bottom: 20px;
+  }
+  
+  .category-buttons button {
+    margin: 5px;
+    padding: 10px 20px;
+    background-color: #e0e0e0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .category-buttons button:hover {
+    background-color: #d0d0d0;
+  }
+  
+  .category-buttons .selected {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 cartes par ligne */
+    gap: 30px;
+    justify-items: center;
+    padding: 20px;
+  }
+  
+  .card-img {
+    width: 100%;
+    max-width: 350px; /* plus large qu'avant */
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+  }
+  
+  .card-img:hover {
+    transform: scale(1.05); /* effet zoom au survol */
+  }
+  

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import './AttackPhase.css';
+// src/components/AttackPhase.js
 
-const AttackPhase = ({ 
+import React, { useState, useEffect } from 'react';
+import './AttackPhase.css';
+import { fetchRandomEventCard } from '../services/eventCardService';
+
+const AttackPhase = ({
   selectedSector,
   diceValue,
   shieldValue,
@@ -9,12 +12,24 @@ const AttackPhase = ({
   onRequestRollDice,
   isSpecialShield
 }) => {
-  const [attackState, setAttackState] = useState('initial'); // initial, rolling, result
+  const [attackState, setAttackState] = useState('initial');
+  const [eventCard, setEventCard] = useState(null);
 
   const handleAttack = () => {
     setAttackState('rolling');
     onRequestRollDice();
   };
+
+  useEffect(() => {
+    const fetchEventCard = async () => {
+      if (isSpecialShield && diceValue >= shieldValue) {
+        const card = await fetchRandomEventCard();
+        setEventCard(card);
+      }
+    };
+
+    fetchEventCard();
+  }, [diceValue, shieldValue, isSpecialShield]);
 
   const renderAttackResult = () => {
     if (!diceValue) return null;
@@ -25,12 +40,14 @@ const AttackPhase = ({
         <h3>{isSuccess ? 'Attaque réussie!' : 'Attaque échouée!'}</h3>
         <p>Valeur du dé: {diceValue}</p>
         <p>Valeur du bouclier: {shieldValue}</p>
-        {isSuccess && isSpecialShield && (
-          <p className="special-message">
-            Bouclier spécial détruit! Piochez une carte événement!
-          </p>
+        {isSuccess && isSpecialShield && eventCard && (
+          <div className="event-card">
+           <img src={`http://127.0.0.1:8000${eventCard.imageUrl}`} alt={eventCard.name} />
+
+           
+          </div>
         )}
-        <button 
+        <button
           onClick={() => onAttackResult(isSuccess)}
           className="confirm-btn"
         >
@@ -56,4 +73,4 @@ const AttackPhase = ({
   );
 };
 
-export default AttackPhase; 
+export default AttackPhase;

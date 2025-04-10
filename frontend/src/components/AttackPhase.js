@@ -1,5 +1,3 @@
-// src/components/AttackPhase.js
-
 import React, { useState, useEffect } from 'react';
 import './AttackPhase.css';
 import { fetchRandomEventCard } from '../services/eventCardService';
@@ -25,6 +23,8 @@ const AttackPhase = ({
       if (isSpecialShield && diceValue >= shieldValue) {
         const card = await fetchRandomEventCard();
         setEventCard(card);
+      } else {
+        setEventCard(null); // Réinitialiser si les conditions ne sont plus remplies
       }
     };
 
@@ -40,15 +40,17 @@ const AttackPhase = ({
         <h3>{isSuccess ? 'Attaque réussie!' : 'Attaque échouée!'}</h3>
         <p>Valeur du dé: {diceValue}</p>
         <p>Valeur du bouclier: {shieldValue}</p>
+        
         {isSuccess && isSpecialShield && eventCard && (
           <div className="event-card">
-           <img src={`http://127.0.0.1:8000${eventCard.imageUrl}`} alt={eventCard.name} />
-
-           
+            <img src={`http://127.0.0.1:8000${eventCard.imageUrl}`} 
+                 alt={eventCard.name} />
+            <p className="event-description">{eventCard.description}</p>
           </div>
         )}
+        
         <button
-          onClick={() => onAttackResult(isSuccess)}
+          onClick={() => onAttackResult(isSuccess, eventCard)}
           className="confirm-btn"
         >
           Continuer

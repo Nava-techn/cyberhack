@@ -19,8 +19,10 @@ return [
     'api_event_card_random' => [[], ['_controller' => 'App\\Controller\\Api\\EventCardController::getRandomEventCard'], [], [['text', '/api/event-card/random']], [], [], []],
     'api_event_card_create' => [[], ['_controller' => 'App\\Controller\\Api\\EventCardController::createEventCard'], [], [['text', '/api/event-card']], [], [], []],
     'api_home' => [[], ['_controller' => 'App\\Controller\\Api\\RootController::home'], [], [['text', '/']], [], [], []],
+    'get_attaque' => [['id'], ['_controller' => 'App\\Controller\\AttaqueController::getAttaque'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/attaque']], [], [], []],
     'register' => [[], ['_controller' => 'App\\Controller\\AuthController::register'], [], [['text', '/api/register']], [], [], []],
     'login' => [[], ['_controller' => 'App\\Controller\\AuthController::login'], [], [['text', '/api/login']], [], [], []],
+    'test_attaque' => [['id'], ['_controller' => 'App\\Controller\\TestController::testAttaque'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/test/attaque']], [], [], []],
     'start-game' => [[], ['_controller' => 'App\\Controller\\Api\\CardController::startGame'], [], [['text', '/api/start-game']], [], [], []],
     'api_start_game' => [[], ['_controller' => 'App\\Controller\\Api\\CardController::startGame'], [], [['text', '/api/start-game']], [], [], []],
 ];

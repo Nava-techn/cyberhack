@@ -11,7 +11,7 @@ class RootController extends AbstractController
     #[Route('/', name: 'api_home', methods: ['GET'])]
     public function home(): Response
     {
-        return $this->redirect('/api/start-game');
+        return $this->redirect('/api/event-card/random');
     }
 }
 

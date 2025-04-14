@@ -1,34 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './GuessAttack.css';
 
 const GuessAttack = ({ attackCard, onGuessComplete }) => {
-  const [timeLeft, setTimeLeft] = useState(10);
+  // Valeurs par défaut pour éviter les undefined
+  const safeAttackCard = attackCard || {
+    name: 'Attaque inconnue',
+    description: 'Description non disponible',
+    propositions: ['Option 1', 'Option 2', 'Option 3'],
+    correctName: 'Option 1',
+    secteur_cible: 'Inconnu',
+    image: '' // Vous pouvez mettre une image par défaut ici
+  };
+
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(10);
   
+  const handleGuessComplete = useCallback((isCorrect) => {
+    setTimeout(() => {
+      onGuessComplete(isCorrect);
+    }, 500);
+  }, [onGuessComplete]);
+
   useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else {
-      // Le temps est écoulé
-      handleTimeUp();
+      handleGuessComplete(false);
     }
-  }, [timeLeft]);
-  
-  const handleTimeUp = () => {
-    // Le temps est écoulé, considérer comme échec si aucune réponse n'a été sélectionnée
-    if (selectedAnswer === null) {
-      onGuessComplete(false);
-    }
-  };
-  
+  }, [timeLeft, handleGuessComplete]);
+
   const handlePropositionClick = (proposition) => {
+    if (selectedAnswer) return; // Empêche de changer la réponse
     setSelectedAnswer(proposition);
-    const isCorrect = proposition === attackCard.nom;
-    
-    setTimeout(() => {
-      onGuessComplete(isCorrect);
-    }, 500);
+    const isCorrect = proposition === safeAttackCard.correctName;
+    handleGuessComplete(isCorrect);
   };
 
   return (
@@ -36,31 +42,40 @@ const GuessAttack = ({ attackCard, onGuessComplete }) => {
       <div className="timer">Temps restant : {timeLeft}s</div>
       
       <div className="attack-card-display">
-        <img src={attackCard.image} alt={`Attaque ${attackCard.nom}`} />
+        {safeAttackCard.image && (
+          <img src={safeAttackCard.image} alt={`Attaque ${safeAttackCard.name}`} />
+        )}
       </div>
       
       <div className="description-container">
         <h3>Description de l'attaque :</h3>
-        <p>{attackCard.description || "Chargement..."}</p>
-        <p className="secteur-cible">Secteur cible : {attackCard.secteur_cible}</p>
+        <p>{safeAttackCard.description}</p>
+        <p className="secteur-cible">Secteur cible : {safeAttackCard.secteur_cible}</p>
       </div>
       
-      {attackCard.propositions && (
-        <div className="propositions-container">
-          <h3>Devinez le nom de cette attaque :</h3>
-          <div className="propositions">
-            {attackCard.propositions.map((proposition, index) => (
-              <button
-                key={index}
-                onClick={() => handlePropositionClick(proposition)}
-                className={`proposition-btn ${
-                  selectedAnswer === proposition ? 'selected' : ''
-                }`}
-              >
-                {proposition}
-              </button>
-            ))}
-          </div>
+      <div className="propositions-container">
+        <h3>Devinez le nom de cette attaque :</h3>
+        <div className="propositions">
+          {safeAttackCard.propositions.map((proposition, index) => (
+            <button
+              key={index}
+              onClick={() => handlePropositionClick(proposition)}
+              className={`proposition-btn ${
+                selectedAnswer === proposition ? 'selected' : ''
+              }`}
+              disabled={!!selectedAnswer}
+            >
+              {proposition}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {selectedAnswer && (
+        <div className={`result ${
+          selectedAnswer === safeAttackCard.correctName ? 'success' : 'failure'
+        }`}>
+          {selectedAnswer === safeAttackCard.correctName ? 'Correct !' : 'Incorrect !'}
         </div>
       )}
     </div>

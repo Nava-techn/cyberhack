@@ -1,4 +1,5 @@
 parameters:
+    images_directory: '%kernel.project_dir%/public/images'
 
 services:
     # default configuration for services in *this* file
@@ -14,6 +15,11 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
     App\DataFixtures\:
         resource: '../src/DataFixtures'
         tags: ['doctrine.fixture.orm']

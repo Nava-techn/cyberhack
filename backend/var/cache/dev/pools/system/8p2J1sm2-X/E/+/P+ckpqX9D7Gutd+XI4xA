@@ -1,0 +1,3 @@
+<?php //App%255CController%255CApi%255CEventCardController%2523getRandomEventCard
+
+return [PHP_INT_MAX, []];

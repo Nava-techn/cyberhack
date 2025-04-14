@@ -187,6 +187,13 @@
   perspective: 1000px;
   z-index: 1;
 }
+.sector-card-on-table.abled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(70%);
+}
+
 
 /* Style commun pour tous les boutons de deck */
 .deck-label {

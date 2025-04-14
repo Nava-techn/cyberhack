@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import Dice from './Dice';
 import Hourglass from './Hourglass';
 import SectorDeck from './SectorDeck';
@@ -16,129 +16,155 @@ const GameTable = () => {
   const [selectedSectorForAttack, setSelectedSectorForAttack] = useState(null);
   const [diceValue, setDiceValue] = useState(null);
   const [gameWon, setGameWon] = useState(false);
+  const [gameLost, setGameLost] = useState(false);
   const [waitingForDiceRoll, setWaitingForDiceRoll] = useState(false);
   const [isGuessing, setIsGuessing] = useState(false);
   const [currentAttackCard, setCurrentAttackCard] = useState(null);
   const hourglassRef = useRef(null);
+  const [guessFailures, setGuessFailures] = useState(0);  // Nombre d'échecs
+  const [guessAttempts, setGuessAttempts] = useState(0);  // Tentatives restantes
 
   const getShieldImage = (type, value) => {
-    return require(`../assets/boucliers/bouclier-${value}-${type}.png`);
+    try {
+      return require(`../assets/boucliers/bouclier-${value}-${type}.png`);
+    } catch {
+      return require('../assets/boucliers/bouclier-default.png');
+    }
   };
 
   const getShieldVerso = () => {
     return require('../assets/boucliers/bouclier-verso.png');
   };
 
-  const handleSectorSelection = (sectors) => {
+  const handleSectorSelection = useCallback((sectors) => {
     setSelectedSectors(sectors);
-  };
+  }, []);
 
-  const handleShieldSelection = (shieldPockets) => {
-    console.log('Shield pockets received:', shieldPockets);
-    setSelectedShields(shieldPockets);
-  };
+  const handleShieldSelection = useCallback((shieldPockets) => {
+    // Trier chaque poche de boucliers du plus grand au plus petit
+    const sortedShields = shieldPockets.map(pocket =>
+      pocket.sort((a, b) => b.value - a.value)
+    );
+    setSelectedShields(sortedShields);
+  }, []);
 
-  const handleAttackSelection = (attacks) => {
-    console.log('Attack cards received:', attacks);
+  const handleAttackSelection = useCallback((attacks) => {
     setSelectedAttacks(attacks);
-  };
+  }, []);
 
-  const handleSectorClick = (sectorIndex) => {
-    if (selectedShields[sectorIndex].length > 0 && selectedAttacks.length > 0) {
+  const handleSectorClick = useCallback((sectorIndex) => {
+    if (isGuessing) {
+      alert("Vous devez d'abord deviner l'attaque avant de pouvoir attaquer les secteurs!");
+      return;  // Ne pas permettre de sélectionner un secteur si on est en train de deviner
+    }
+
+    if (!isGuessing && selectedShields[sectorIndex]?.length > 0 && selectedAttacks.length > 0) {
       setSelectedSectorForAttack(sectorIndex);
       setAttackingPhase(true);
       setWaitingForDiceRoll(true);
     } else if (selectedAttacks.length === 0) {
       alert("Il n'y a plus de cartes d'attaque disponibles!");
+    } else if (isGuessing) {
+      alert("Vous devez d'abord deviner l'attaque!");
     } else {
       alert("Ce secteur n'a plus de boucliers à attaquer!");
     }
-  };
+  }, [selectedShields, selectedAttacks, isGuessing]);
 
-  const handleDiceRoll = (value) => {
-    if (!waitingForDiceRoll) return;
-    
-    setDiceValue(value);
-    setWaitingForDiceRoll(false);
-  };
+  const handleDiceRoll = useCallback((value) => {
+    if (waitingForDiceRoll) {
+      setDiceValue(value);
+      setWaitingForDiceRoll(false);
+    }
+  }, [waitingForDiceRoll]);
 
-  const handleAttackResult = (isSuccess) => {
+  const handleAttackResult = useCallback((isSuccess, eventCard) => {
     const newShields = [...selectedShields];
-    
+
     if (isSuccess) {
-      // Retirer le bouclier de la pochette
-      newShields[selectedSectorForAttack].shift();
-      
-      // Vérifier si le secteur est détruit
-      if (newShields[selectedSectorForAttack].length === 0) {
-        // Vérifier si c'est le dernier secteur avec des boucliers
-        const remainingShields = newShields.some(pocket => pocket.length > 0);
-        if (!remainingShields) {
+      newShields[selectedSectorForAttack]?.shift();
+
+      if (eventCard && newShields[selectedSectorForAttack]?.length > 0) {
+        newShields[selectedSectorForAttack]?.shift();
+      }
+
+      if (newShields[selectedSectorForAttack]?.length === 0) {
+        if (newShields.every(pocket => pocket.length === 0)) {
           setGameWon(true);
         }
       }
     }
 
-    // Retirer la carte d'attaque utilisée
     const newAttacks = [...selectedAttacks];
     newAttacks.shift();
+
     setSelectedAttacks(newAttacks);
-    
     setSelectedShields(newShields);
     setAttackingPhase(false);
     setSelectedSectorForAttack(null);
     setDiceValue(null);
     setWaitingForDiceRoll(false);
-  };
+  }, [selectedShields, selectedAttacks, selectedSectorForAttack]);
 
-  const handleAttackCardClick = () => {
+  const handleAttackCardClick = useCallback(() => {
     if (selectedAttacks.length > 0 && !isGuessing) {
       const currentCard = selectedAttacks[0];
-      setCurrentAttackCard(currentCard);
-      setIsGuessing(true);
-      
-      // Démarrer le sablier pour 10 secondes
-      if (hourglassRef.current) {
-        hourglassRef.current.startTimer();
-      }
-      
-      // Récupérer les informations de l'attaque depuis l'API
-      fetch(`/api/attaque/${currentCard.id}`)
-        .then(response => response.json())
-        .then(data => {
-          setCurrentAttackCard(prev => ({
-            ...prev,
-            id_attaque: data.id_attaque,
-            nom: data.nom,
-            description: data.description,
-            secteur_cible: data.secteur_cible,
-            correctName: data.nom, // Pour la vérification de la réponse
-            propositions: data.propositions
-          }));
-        })
-        .catch(error => {
-          console.error('Erreur lors de la récupération des données:', error);
-        });
-    }
-  };
+      const otherAttacks = selectedAttacks.slice(1, 3).map(a => a.name);
 
-  const handleGuessComplete = (success) => {
-    // Retirer la carte utilisée
+      while (otherAttacks.length < 2) {
+        otherAttacks.push(`Attaque ${Math.floor(Math.random() * 15) + 1}`);
+      }
+
+      const completeCard = {
+        ...currentCard,
+        propositions: [currentCard.name, ...otherAttacks].sort(() => Math.random() - 0.5),
+        correctName: currentCard.name,
+        description: currentCard.description || `Cette attaque est efficace contre les boucliers de type ${currentCard.effectiveAgainst || 'tous types'}`
+      };
+
+      setCurrentAttackCard(completeCard);
+      setIsGuessing(true);
+      hourglassRef.current?.startTimer();
+    }
+  }, [selectedAttacks, isGuessing]);
+
+  const handleGuessComplete = useCallback((success) => {
     const newAttacks = [...selectedAttacks];
+    const wasLastCard = newAttacks.length === 1;
+
     newAttacks.shift();
     setSelectedAttacks(newAttacks);
-    
-    setIsGuessing(false);
     setCurrentAttackCard(null);
-    
-    // Vous pouvez ajouter ici une logique pour gérer le succès/échec
-  };
+
+    if (success) {
+      setGuessAttempts(0);  // Réinitialiser le compteur si la devinette est correcte
+      setIsGuessing(false);
+    } else {
+      const newFailures = guessFailures + 1;
+      setGuessFailures(newFailures);
+      setGuessAttempts((prevAttempts) => prevAttempts + 1);  // Incrémenter les tentatives échouées
+      setIsGuessing(false);
+
+      if (newFailures >= 5 || wasLastCard) {
+        setGameLost(true);  // Si 5 échecs ou dernière carte, la défaite
+      }
+    }
+  }, [selectedAttacks, guessFailures]);
 
   if (gameWon) {
     return (
-      <div className="game-won">
+      <div className="game-end-screen victory">
         <h1>Victoire!</h1>
-        <p>Les pirates ont réussi à détruire tous les secteurs!</p>
+        <p>Vous avez détruit tous les secteurs ennemis!</p>
+      </div>
+    );
+  }
+
+  if (gameLost) {
+    return (
+      <div className="game-end-screen defeat">
+        <h1>Défaite</h1>
+        <p>Vous avez échoué à deviner l'attaque après 5 tentatives.</p>
       </div>
     );
   }
@@ -147,26 +173,38 @@ const GameTable = () => {
     <div className="game-container">
       <div className="cards-zone">
         <SectorDeck onSelectSectors={handleSectorSelection} />
-        <AttackDeck onSelectAttacks={handleAttackSelection} /> 
+        <AttackDeck
+          onSelectAttacks={handleAttackSelection}
+          onStartGuessing={handleAttackCardClick}
+        />
         <ShieldDeck onSelectShields={handleShieldSelection} />
       </div>
+
       <div className="game-table">
         <Dice onRoll={handleDiceRoll} isEnabled={waitingForDiceRoll} />
         <Hourglass ref={hourglassRef} />
-        
-        {/* Zone des cartes d'attaque */}
+
         <div className="selected-attacks" onClick={handleAttackCardClick}>
-          {selectedAttacks.map((attack, index) => (
-            <div 
-              key={index}
-              className="attack-card stacked"
-            >
+          {selectedAttacks.sort((a, b) => b.value - a.value).map((attack, index) => (
+            <div key={index} className="attack-card stacked">
               <div className="attack-card-inner">
                 <div className="attack-card-front">
-                  <img src={attack.image} alt={`Attaque ${index + 1} recto`} />
+                  <img
+                    src={attack.image}
+                    alt={`Attaque ${attack.name || index + 1}`}
+                    onError={(e) => {
+                      e.target.src = require('../assets/attaques/attaque-default.png');
+                    }}
+                  />
                 </div>
                 <div className="attack-card-back">
-                  <img src={attack.verso} alt={`Attaque ${index + 1} verso`} />
+                  <img
+                    src={attack.verso}
+                    alt="Verso de carte attaque"
+                    onError={(e) => {
+                      e.target.src = require('../assets/attaques/attaque-default-verso.png');
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -176,17 +214,22 @@ const GameTable = () => {
         <div className="selected-cards-area">
           <div className="selected-sectors-row">
             {selectedSectors.map((sector, index) => (
-              <div 
-                key={index} 
-                className="sector-card-on-table"
-                onClick={() => handleSectorClick(index)}
+              <div
+                key={index}
+                className={`sector-card-on-table ${selectedShields[index]?.length ? 'active' : 'inactive'} ${isGuessing ? 'disabled' : ''}`}
+                onClick={() => !isGuessing && handleSectorClick(index)}
                 style={{
                   '--recto': `url(${sector})`,
-                  '--verso': `url(${sector.replace('recto', 'verso')})`,
-                  cursor: 'pointer'
+                  '--verso': `url(${sector.replace('recto', 'verso')})`
                 }}
               >
-                <img src={sector} alt={`Secteur ${index + 1}`} />
+                <img
+                  src={sector}
+                  alt={`Secteur ${index + 1}`}
+                  onError={(e) => {
+                    e.target.src = require('../assets/secteurs/secteur-default.png');
+                  }}
+                />
               </div>
             ))}
           </div>
@@ -194,46 +237,43 @@ const GameTable = () => {
           <div className="shield-pockets-row">
             {selectedShields.map((pocket, pocketIndex) => (
               <div key={pocketIndex} className="shield-pocket">
-                {pocket.map((shield, shieldIndex) => {
-                  const shieldImage = getShieldImage(shield.type, shield.value);
-                  const versoImage = getShieldVerso();
-                  return (
-                    <div 
-                      key={shieldIndex}
-                      className="shield-card-on-table"
-                      style={{
-                        '--recto': `url(${shieldImage})`,
-                        '--verso': `url(${versoImage})`
-                      }}
-                    >
-                      <img 
-                        src={shieldImage}
-                        alt={`Bouclier ${shield.type} ${shield.value}`} 
-                      />
-                    </div>
-                  );
-                })}
+                {pocket.map((shield, shieldIndex) => (
+                  <div
+                    key={shieldIndex}
+                    className="shield-card-on-table"
+                    style={{
+                      '--recto': `url(${getShieldImage(shield?.type, shield?.value)})`,
+                      '--verso': `url(${getShieldVerso()})`
+                    }}
+                  >
+                    <img
+                      src={getShieldImage(shield?.type, shield?.value)}
+                      alt={`Bouclier ${shield?.type} ${shield?.value}`}
+                    />
+                  </div>
+                ))}
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {attackingPhase && selectedSectorForAttack !== null && (
+      {attackingPhase && (
         <AttackPhase
           selectedSector={selectedSectorForAttack}
           diceValue={diceValue}
-          shieldValue={selectedShields[selectedSectorForAttack][0].value}
+          shieldValue={selectedShields[selectedSectorForAttack]?.[0]?.value || 0}
           onAttackResult={handleAttackResult}
           onRequestRollDice={() => setWaitingForDiceRoll(true)}
-          isSpecialShield={selectedShields[selectedSectorForAttack][0].type === 'dark'}
+          isSpecialShield={selectedShields[selectedSectorForAttack]?.[0]?.type === 'dark'}
         />
       )}
 
       {isGuessing && currentAttackCard && (
-        <GuessAttack 
+        <GuessAttack
           attackCard={currentAttackCard}
           onGuessComplete={handleGuessComplete}
+          attemptsLeft={1} // Toujours 1 essai maintenant
         />
       )}
     </div>

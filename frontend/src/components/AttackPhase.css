@@ -1,3 +1,4 @@
+/* AttackPhase.css */
 .attack-phase {
   position: fixed;
   top: 50%;
@@ -51,4 +52,40 @@
 
 .attack-result p {
   margin: 0.5rem 0;
-} 
+}
+
+/* Nouveaux styles pour la carte événement */
+.event-card {
+  position: relative;
+  margin: 1rem auto;
+  max-width: 250px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.event-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+
+.event-card p {
+  font-size: 0.9rem;
+}
+
+.close-event {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.close-event:hover {
+  color: #ff0000;
+}

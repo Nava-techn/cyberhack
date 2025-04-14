@@ -13,16 +13,20 @@ class EventCardRepository extends ServiceEntityRepository
         parent::__construct($registry, EventCard::class);
     }
 
-    /**
-     * Récupère un nombre donné de cartes événements de manière aléatoire.
-     */
-    public function findRandomCards(int $count): array
+    public function findRandomEventCard(): ?EventCard
     {
-        return $this->createQueryBuilder('e')
-            ->addSelect('RAND() as HIDDEN rand')
-            ->orderBy('rand')
-            ->setMaxResults($count)
-            ->getQuery()
-            ->getResult();
+        $entityManager = $this->getEntityManager();
+
+        $query = 'SELECT * FROM event_card ORDER BY RAND() LIMIT 1';
+        $statement = $entityManager->getConnection()->prepare($query);
+        
+        // Exécuter la requête et récupérer le résultat sous forme de tableau associatif
+        $result = $statement->executeQuery()->fetchAssociative();
+
+        if ($result) {
+            return $this->getEntityManager()->getReference(EventCard::class, $result['id']);
+        }
+
+        return null;
     }
 }
